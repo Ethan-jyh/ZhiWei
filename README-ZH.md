@@ -28,10 +28,6 @@
 - 🎯 **动态变量注入与干预评估**：负责跨进程仿真 IPC 状态机调度器，支持在推演过程中注入辟谣声明、引导通报等干预变量；系统化比较不同干预时机和策略下的舆论极化变化与平复降温周期，为危机应对方案提供沙盘评估依据。
 - 📊 **推演结果分析与报告输出**：构建 Report Agent，分析沙盘快照中的舆论引爆点、极化拐点与次生风险，输出态势演进树、群体情绪演化图谱和应对建议。
 
-## 🌐 在线体验
-
-欢迎访问在线 Demo 演示环境，体验我们为你准备的一次关于热点舆情事件的推演预测：[mirofish-live-demo](https://666ghj.github.io/mirofish-demo/)
-
 ## 📸 系统截图
 
 <div align="center">
@@ -50,26 +46,6 @@
 </tr>
 </table>
 </div>
-
-## 🎬 演示视频
-
-### 1. 武汉大学舆情推演预测 + MiroFish项目讲解
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1VYBsBHEMY/" target="_blank"><img src="./static/image/武大模拟演示封面.png" alt="MiroFish Demo Video" width="75%"/></a>
-
-点击图片查看使用微舆BettaFish生成的《武大舆情报告》进行预测的完整演示视频
-</div>
-
-### 2. 《红楼梦》失传结局推演预测
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1cPk3BBExq" target="_blank"><img src="./static/image/红楼梦模拟推演封面.jpg" alt="MiroFish Demo Video" width="75%"/></a>
-
-点击图片查看基于《红楼梦》前80回数十万字，MiroFish深度预测失传结局
-</div>
-
-> **金融方向推演预测**、**时政要闻推演预测**等示例陆续更新中...
 
 ## 🔄 工作流程
 
@@ -164,28 +140,14 @@ docker compose up -d
 
 > 在 `docker-compose.yml` 中已通过注释提供加速镜像地址，可按需替换
 
-## 📬 更多交流
+## 📄 致谢与开源声明 (Acknowledgements & Attribution)
 
-<div align="center">
-<img src="./static/image/QQ群.png" alt="QQ交流群" width="60%"/>
-</div>
+本项目 **「知微」 (ZhiWei)** 基于开源项目 [MiroFish](https://github.com/666ghj/MiroFish)（由原作者 [666ghj](https://github.com/666ghj) 发起）进行深度二次研发与架构扩展。
 
-&nbsp;
+在此基础上，本项目针对重大突发事件演练与公共政策评估场景，研发并扩展了：
+- **跨进程仿真 IPC 状态机调度器** 与 **运行时声明干预系统**（即时/排期辟谣与引导通报）
+- **舆论讨论热度聚合** 与 **达标降温窗口可审计计算引擎**
+- **场景冻结机制** 与 **受控对比实验系统**（Control / Early / Late 变体对比与局限性声明）
+- **本体知识图谱（Ontology）人物特征映射** 与 **Report Agent** 态势演化分析
 
-MiroFish团队长期招募全职/实习，如果你对多Agent应用感兴趣，欢迎投递简历至：**mirofish@shanda.com**
-
-## 📄 致谢
-
-**MiroFish 得到了盛大集团的战略支持和孵化！**
-
-MiroFish 的仿真引擎由 **[OASIS](https://github.com/camel-ai/oasis)** 驱动，我们衷心感谢 CAMEL-AI 团队的开源贡献！
-
-## 📈 项目统计
-
-<a href="https://github.com/666ghj/MiroFish">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="static/image/star-history-dark.svg" />
-   <source media="(prefers-color-scheme: light)" srcset="static/image/star-history-light.svg" />
-   <img alt="666ghj/MiroFish Star History Chart" src="static/image/star-history-light.svg" />
- </picture>
-</a>
+衷心感谢原作者团队与 CAMEL-AI [OASIS](https://github.com/camel-ai/oasis) 社区的卓越工作与开源贡献！
