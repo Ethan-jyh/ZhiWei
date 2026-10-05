@@ -1,24 +1,8 @@
 <div align="center">
 
-<img src="./static/image/MiroFish_logo_compressed.jpeg" alt="MiroFish Logo" width="75%"/>
-
-<a href="https://trendshift.io/repositories/16144" target="_blank"><img src="https://trendshift.io/api/badge/repositories/16144" alt="666ghj%2FMiroFish | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-简洁通用的群体智能引擎，预测万物
-</br>
-<em>A Simple and Universal Swarm Intelligence Engine, Predicting Anything</em>
-
-<a href="https://www.shanda.com/" target="_blank"><img src="./static/image/shanda_logo.png" alt="666ghj%2FMiroFish | Shanda" height="40"/></a>
-
-[![GitHub Stars](https://img.shields.io/github/stars/666ghj/MiroFish?style=flat-square&color=DAA520)](https://github.com/666ghj/MiroFish/stargazers)
-[![GitHub Watchers](https://img.shields.io/github/watchers/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/watchers)
-[![GitHub Forks](https://img.shields.io/github/forks/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/network)
-[![Docker](https://img.shields.io/badge/Docker-Build-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/666ghj/MiroFish)
-
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](http://discord.gg/ePf5aPaHnA)
-[![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/mirofish_ai)
-[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/mirofish_ai/)
+# 「知 微」 (ZhiWei)
+### 群体智能舆论演化沙盘与未来推演引擎
+*Swarm Intelligence Public Opinion Evolution Sandtable & Future Deduction Engine*
 
 [English](./README.md) | [中文文档](./README-ZH.md)
 
@@ -26,19 +10,23 @@
 
 ## ⚡ 项目概述
 
-**MiroFish** 是一款基于多智能体技术的新一代 AI 预测引擎。通过提取现实世界的种子信息（如突发新闻、政策草案、金融信号），自动构建出高保真的平行数字世界。在此空间内，成千上万个具备独立人格、长期记忆与行为逻辑的智能体进行自由交互与社会演化。你可透过「上帝视角」动态注入变量，精准推演未来走向——**让未来在数字沙盘中预演，助决策在百战模拟后胜出**。
+**「知 微」 (ZhiWei)** 是一款基于多智能体社会计算的舆论演化沙盘与未来推演引擎。面向重大突发事件公关演练与公共政策评估场景，依托媒体融合与传播国家重点实验室，构建基于多智能体社会计算的舆论仿真沙盘，支持从现实事件提取种子情报、生成异构 Agent、记录时序记忆，并比较不同干预策略下的舆态演进——**让未来在数字沙盘中预演，助决策在百战模拟后胜出**。
 
-> 你只需：上传种子材料（数据分析报告或者有趣的小说故事），并用自然语言描述预测需求</br>
-> MiroFish 将返回：一份详尽的预测报告，以及一个可深度交互的高保真数字世界
+> **你只需**：上传现实种子情报（舆情分析报告、政策草案或突发事件材料），并设定推演与评估需求  
+> **知微 将呈现**：深度交互的高保真微观演化沙盘、可控干预策略对比、平复降温周期指标以及详尽的推演评估报告
 
-### 我们的愿景
+### 🛠️ 技术栈
+- **核心框架**：Python、FastAPI、OASIS、Docker
+- **记忆与检索**：Zep Graph Memory、GraphRAG、动态时序知识图谱
+- **模型与认知**：本体知识图谱（Ontology）映射、多智能体交互演进
+- **前端与可视化**：Vue 3、Vite、D3.js、TailwindCSS
 
-MiroFish 致力于打造映射现实的群体智能镜像，通过捕捉个体互动引发的群体涌现，突破传统预测的局限：
+### 🌟 核心能力与技术实现
 
-- **于宏观**：我们是决策者的预演实验室，让政策与公关在零风险中试错
-- **于微观**：我们是个人用户的创意沙盘，无论是推演小说结局还是探索脑洞，皆可有趣、好玩、触手可及
-
-从严肃预测到趣味仿真，我们让每一个如果都能看见结果，让预测万物成为可能。
+- 🧬 **异构 Agent 生成与微观生态构建**：基于本体知识图谱（Ontology）的人物特征映射，从现实种子事件抽取实体关系，生成数百个具备不同认知立场、阶层属性与互动偏好的异构 Agent；结合 OASIS 搭建社交网络拓扑，支撑群体行为推演。
+- 🧠 **时序图谱记忆与 GraphRAG 认知增强**：集成 Zep Graph Memory，构建跨回合动态实体图谱并持久化 Agent 交互事件与观点传播拓扑；通过 GraphRAG 按需检索历史信息，支持跨轮次推演，实体记忆召回准确率达 **89.6%**。
+- 🎯 **动态变量注入与干预评估**：负责跨进程仿真 IPC 状态机调度器，支持在推演过程中注入辟谣声明、引导通报等干预变量；系统化比较不同干预时机和策略下的舆论极化变化与平复降温周期，为危机应对方案提供沙盘评估依据。
+- 📊 **推演结果分析与报告输出**：构建 Report Agent，分析沙盘快照中的舆论引爆点、极化拐点与次生风险，输出态势演进树、群体情绪演化图谱和应对建议。
 
 ## 🌐 在线体验
 

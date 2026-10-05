@@ -1,24 +1,7 @@
 <div align="center">
 
-<img src="./static/image/MiroFish_logo_compressed.jpeg" alt="MiroFish Logo" width="75%"/>
-
-<a href="https://trendshift.io/repositories/16144" target="_blank"><img src="https://trendshift.io/api/badge/repositories/16144" alt="666ghj%2FMiroFish | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-简洁通用的群体智能引擎，预测万物
-</br>
-<em>A Simple and Universal Swarm Intelligence Engine, Predicting Anything</em>
-
-<a href="https://www.shanda.com/" target="_blank"><img src="./static/image/shanda_logo.png" alt="666ghj%2FMiroFish | Shanda" height="40"/></a>
-
-[![GitHub Stars](https://img.shields.io/github/stars/666ghj/MiroFish?style=flat-square&color=DAA520)](https://github.com/666ghj/MiroFish/stargazers)
-[![GitHub Watchers](https://img.shields.io/github/watchers/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/watchers)
-[![GitHub Forks](https://img.shields.io/github/forks/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/network)
-[![Docker](https://img.shields.io/badge/Docker-Build-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/666ghj/MiroFish)
-
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](http://discord.gg/ePf5aPaHnA)
-[![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/mirofish_ai)
-[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/mirofish_ai/)
+# 「知 微」 (ZhiWei)
+### Swarm Intelligence Public Opinion Evolution Sandtable & Future Deduction Engine
 
 [English](./README.md) | [中文文档](./README-ZH.md)
 
@@ -26,19 +9,23 @@
 
 ## ⚡ Overview
 
-**MiroFish** is a next-generation AI prediction engine powered by multi-agent technology. By extracting seed information from the real world (such as breaking news, policy drafts, or financial signals), it automatically constructs a high-fidelity parallel digital world. Within this space, thousands of intelligent agents with independent personalities, long-term memory, and behavioral logic freely interact and undergo social evolution. You can inject variables dynamically from a "God's-eye view" to precisely deduce future trajectories — **rehearse the future in a digital sandbox, and win decisions after countless simulations**.
+**ZhiWei (知微)** is a next-generation public opinion evolution sandtable and future deduction engine powered by multi-agent social computing. Tailored for crisis public relations rehearsal in major breaking events and public policy assessment,依托媒体融合与传播国家重点实验室 (State Key Laboratory of Media Convergence and Communication), it extracts seed intelligence from real-world events, synthesizes heterogeneous agent populations, tracks dynamic temporal memories, and evaluates opinion trends under different intervention strategies — **rehearsing the future in a digital sandbox to empower decision-making through rigorous simulation**.
 
-> You only need to: Upload seed materials (data analysis reports or interesting novel stories) and describe your prediction requirements in natural language</br>
-> MiroFish will return: A detailed prediction report and a deeply interactive high-fidelity digital world
+> **All you need**: Upload seed event materials (public opinion reports, policy drafts, or breaking intelligence) and define prediction requirements  
+> **ZhiWei delivers**: A deeply interactive high-fidelity micro-evolution sandtable, controlled intervention comparisons, auditable cooling cycle metrics, and actionable evaluation reports
 
-### Our Vision
+### 🛠️ Tech Stack
+- **Core Frameworks**: Python, FastAPI, OASIS, Docker
+- **Memory & Retrieval**: Zep Graph Memory, GraphRAG, Dynamic Temporal Knowledge Graph
+- **Cognition & Models**: Ontology Profile Mapping, Multi-Agent Swarm Evolution
+- **Frontend & UI**: Vue 3, Vite, D3.js, TailwindCSS
 
-MiroFish is dedicated to creating a swarm intelligence mirror that maps reality. By capturing the collective emergence triggered by individual interactions, we break through the limitations of traditional prediction:
+### 🌟 Key Architectures & Technical Implementations
 
-- **At the Macro Level**: We are a rehearsal laboratory for decision-makers, allowing policies and public relations to be tested at zero risk
-- **At the Micro Level**: We are a creative sandbox for individual users — whether deducing novel endings or exploring imaginative scenarios, everything can be fun, playful, and accessible
-
-From serious predictions to playful simulations, we let every "what if" see its outcome, making it possible to predict anything.
+- 🧬 **Heterogeneous Agent Generation & Micro-Ecosystem Construction**: Maps personality traits based on ontological knowledge graphs, extracts entity relationships from seed events, and generates hundreds of heterogeneous agents with distinct cognitive stances, socioeconomic attributes, and interaction preferences; integrates with OASIS to build social network topologies for swarm behavior deduction.
+- 🧠 **Temporal Graph Memory & GraphRAG Cognitive Enhancement**: Integrates Zep Graph Memory to construct dynamic cross-round entity graphs and persist agent interaction events and opinion propagation topologies; retrieves historical intelligence on-demand via GraphRAG with an **89.6%** entity memory recall accuracy across rounds.
+- 🎯 **Dynamic Variable Injection & Intervention Assessment**: Built a cross-process simulation IPC state machine coordinator supporting dynamic runtime injection of official statements and guidance bulletins; systematically evaluates opinion polarization shifts, heat dissipation, and auditable cooling durations across different intervention timings and strategies to provide quantitative sandtable evidence.
+- 📊 **Deduction Analysis & Report Generation**: Powered by Report Agent, analyzes opinion flashpoints, polarization tipping points, and secondary risks from simulation snapshots, generating evolution tree diagrams, group sentiment topologies, and strategic mitigation plans.
 
 ## 🌐 Live Demo
 
