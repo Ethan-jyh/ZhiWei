@@ -730,6 +730,34 @@
       "correctReason": "修正理由",
       "submitCorrection": "提交修正",
       "statementMarker": "声明发布 (第 {round} 轮)"
+    },
+    "comparison": {
+      "title": "干预情景对照实验",
+      "subtitle": "基于同一冻结场景，对比不干预、早回应与晚回应的舆情回落效果",
+      "createTitle": "创建情景对照实验",
+      "earlyRound": "早回应轮次",
+      "lateRound": "晚回应轮次",
+      "createBtn": "冻结场景并生成三组对照方案",
+      "creating": "创建中...",
+      "variants": {
+        "control": "不干预 (对照组)",
+        "early": "早回应方案",
+        "late": "晚回应方案"
+      },
+      "runStatus": {
+        "ready": "就绪 (未启动)",
+        "running": "模拟中",
+        "completed": "已完成",
+        "failed": "失败"
+      },
+      "startRun": "启动此方案",
+      "starting": "启动中...",
+      "loadComparison": "刷新对比数据",
+      "chartTitle": "三组方案舆情热度走势对比",
+      "exploratoryBadge": "探索性 (有人工干预)",
+      "incompatibleBadge": "不兼容 (参数不一致)",
+      "limitationsTitle": "实验局限性与说明",
+      "noExperiment": "尚未创建情景对照实验"
     }
   }
 }

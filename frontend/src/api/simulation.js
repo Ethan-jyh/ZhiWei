@@ -248,3 +248,37 @@ export const correctInterventionLabel = (runId, payload) => {
   return service.post(`/api/simulation/${runId}/intervention-labels/correct`, payload)
 }
 
+/**
+ * 创建干预对照情景实验
+ * @param {Object} payload
+ */
+export const createInterventionExperiment = (payload) => {
+  return service.post('/api/simulation/experiments', payload)
+}
+
+/**
+ * 创建实验方案运行
+ * @param {string} experimentId
+ * @param {Object} payload
+ */
+export const createInterventionExperimentRun = (experimentId, payload) => {
+  return service.post(`/api/simulation/experiments/${experimentId}/runs`, payload)
+}
+
+/**
+ * 启动实验方案运行
+ * @param {string} experimentId
+ * @param {string} runId
+ */
+export const startInterventionExperimentRun = (experimentId, runId) => {
+  return service.post(`/api/simulation/experiments/${experimentId}/runs/${runId}/start`)
+}
+
+/**
+ * 获取干预情景对照结果
+ * @param {string} experimentId
+ */
+export const getInterventionComparison = (experimentId) => {
+  return service.get(`/api/simulation/experiments/${experimentId}/comparison`)
+}
+

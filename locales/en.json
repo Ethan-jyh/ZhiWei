@@ -730,6 +730,34 @@
       "correctReason": "Correction Reason",
       "submitCorrection": "Submit Correction",
       "statementMarker": "Intervention Injected (Round {round})"
+    },
+    "comparison": {
+      "title": "Intervention Scenario Comparison",
+      "subtitle": "Compare discussion heat and cooling timelines across control, early, and late responses on the same frozen scene",
+      "createTitle": "Create Scenario Comparison Experiment",
+      "earlyRound": "Early Response Round",
+      "lateRound": "Late Response Round",
+      "createBtn": "Freeze Scene & Generate 3 Variants",
+      "creating": "Creating...",
+      "variants": {
+        "control": "No Intervention (Control)",
+        "early": "Early Response Variant",
+        "late": "Late Response Variant"
+      },
+      "runStatus": {
+        "ready": "Ready (Not started)",
+        "running": "Running",
+        "completed": "Completed",
+        "failed": "Failed"
+      },
+      "startRun": "Start This Variant",
+      "starting": "Starting...",
+      "loadComparison": "Refresh Comparison Data",
+      "chartTitle": "Discussion Heat Timeline by Variant",
+      "exploratoryBadge": "Exploratory (Manual adjustments made)",
+      "incompatibleBadge": "Incompatible (Parameter divergence)",
+      "limitationsTitle": "Limitations & Disclaimers",
+      "noExperiment": "No scenario comparison experiment created yet"
     }
   }
 }

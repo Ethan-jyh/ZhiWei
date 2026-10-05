@@ -231,7 +231,7 @@ class InterventionExperimentService:
         incompatible_runs: list[dict[str, Any]] = []
 
         standard_limitations = [
-            "不同随机种子或LLM随机采样存在固有方差，单次实验结果不代表因果预测准确率",
+            "不同随机种子或LLM随机采样存在固有随机方差，单次实验结果不代表因果预测准确率",
             "各运行间环境状态、平台数据库与讨论历史相互严格隔离，无继承关系",
             "热度指标仅衡量围绕特定话题的发帖与互动频次规模及回落时间，不代表公众对方案认同度或满意度",
         ]

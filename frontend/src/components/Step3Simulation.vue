@@ -287,6 +287,15 @@
       />
     </div>
 
+    <!-- Intervention Scenario Comparison Panel -->
+    <div v-if="simulationId" class="intervention-comparison-container" style="margin: 12px 16px;">
+      <InterventionComparison
+        :simulation-id="simulationId"
+        :topic-id="projectData?.topic || 'default'"
+        :publisher-agent-id="10"
+      />
+    </div>
+
     <!-- Bottom Info / Logs -->
     <div class="system-logs">
       <div class="log-header">
@@ -316,6 +325,7 @@ import {
 import { generateReport } from '../api/report'
 import InterventionPanel from './InterventionPanel.vue'
 import InterventionMetrics from './InterventionMetrics.vue'
+import InterventionComparison from './InterventionComparison.vue'
 
 const { t } = useI18n()
 
