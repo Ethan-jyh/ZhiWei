@@ -279,6 +279,14 @@
       />
     </div>
 
+    <!-- Intervention Discussion Heat & Cooling Metrics -->
+    <div v-if="simulationId" class="intervention-metrics-container" style="margin: 12px 16px;">
+      <InterventionMetrics
+        :simulation-id="simulationId"
+        :topic-id="projectData?.topic || 'default'"
+      />
+    </div>
+
     <!-- Bottom Info / Logs -->
     <div class="system-logs">
       <div class="log-header">
@@ -307,6 +315,7 @@ import {
 } from '../api/simulation'
 import { generateReport } from '../api/report'
 import InterventionPanel from './InterventionPanel.vue'
+import InterventionMetrics from './InterventionMetrics.vue'
 
 const { t } = useI18n()
 

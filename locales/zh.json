@@ -697,6 +697,39 @@
     "disclaimer": "声明进入平台后将按照真实算法推荐与传播，不代表所有 Agent 均已接受观点",
     "round": "轮次",
     "effectiveRound": "实际发布轮次",
-    "postId": "平台帖子 ID"
+    "postId": "平台帖子 ID",
+    "metrics": {
+      "title": "话题舆情热度与回落分析",
+      "subtitle": "客观量化干预声明注入前后的全平台讨论热度与冷却时间",
+      "configureTitle": "舆情指标参数配置",
+      "notConfigured": "该模拟尚未配置话题热度分析参数",
+      "computing": "热度数据计算中，请稍候...",
+      "threshold": "回落热度阈值 (θ)",
+      "consecutiveRounds": "连续稳定轮数 (w)",
+      "minutesPerRound": "每轮模拟时长 (分钟)",
+      "saveAndCalculate": "保存配置并计算",
+      "reconfigure": "修改配置",
+      "peakHeat": "讨论峰值",
+      "peakRound": "第 {round} 轮",
+      "coolingDuration": "回落耗时",
+      "durationDetail": "{rounds} 轮 ({minutes} 分钟)",
+      "status": {
+        "cooled": "已成功降温",
+        "provisional": "观察中 (暂定)",
+        "not_cooled": "未降温",
+        "no_discussion": "无相关讨论",
+        "below_threshold": "未超回落阈值",
+        "incomplete": "数据不全/有缺失"
+      },
+      "reboundAlert": "降温后反弹轮次: {rounds}",
+      "disclaimer": "【说明】热度指标仅衡量围绕特定话题的发帖、评论与转发总量，用于评估话题规模与降温周期，不代表公众对干预声明的认同度或满意度。",
+      "correctTitle": "人工核准 / 修正动作标签",
+      "correctPlatform": "动作平台",
+      "correctRowId": "日志行号 (trace_rowid)",
+      "correctRelated": "是否相关",
+      "correctReason": "修正理由",
+      "submitCorrection": "提交修正",
+      "statementMarker": "声明发布 (第 {round} 轮)"
+    }
   }
 }

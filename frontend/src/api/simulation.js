@@ -222,3 +222,29 @@ export const cancelIntervention = (runId, eventId) => {
   return service.post(`/api/simulation/${runId}/interventions/${eventId}/cancel`)
 }
 
+/**
+ * 获取模拟话题干预指标
+ * @param {string} runId
+ */
+export const getInterventionMetrics = (runId) => {
+  return service.get(`/api/simulation/${runId}/intervention-metrics`)
+}
+
+/**
+ * 保存模拟话题干预指标配置
+ * @param {string} runId
+ * @param {Object} config
+ */
+export const saveInterventionMetricConfig = (runId, config) => {
+  return service.put(`/api/simulation/${runId}/intervention-metric-config`, config)
+}
+
+/**
+ * 人工纠正动作标签
+ * @param {string} runId
+ * @param {Object} payload
+ */
+export const correctInterventionLabel = (runId, payload) => {
+  return service.post(`/api/simulation/${runId}/intervention-labels/correct`, payload)
+}
+

@@ -9,12 +9,16 @@ from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
 
 from app.services.intervention_service import InterventionService
+from intervention.metric_models import HeatConfig
 from intervention.models import InterventionError
 
 logger = logging.getLogger("mirofish.api.intervention")
 
 
-def create_intervention_blueprint(service: InterventionService | None = None) -> Blueprint:
+def create_intervention_blueprint(
+    service: InterventionService | None = None,
+    metrics_service: Any = None,
+) -> Blueprint:
     bp = Blueprint("intervention", __name__)
 
     def _get_service() -> InterventionService:
@@ -26,6 +30,13 @@ def create_intervention_blueprint(service: InterventionService | None = None) ->
             root=SimulationRunner.RUN_STATE_DIR,
             context_provider=SimulationRunner.get_intervention_context,
         )
+
+    def _get_metrics_service():
+        if metrics_service is not None:
+            return metrics_service
+        from app.services.intervention_metrics import get_metrics_service
+
+        return get_metrics_service()
 
     def _handle_error(e: Exception):
         if isinstance(e, FileNotFoundError):
@@ -90,6 +101,53 @@ def create_intervention_blueprint(service: InterventionService | None = None) ->
                 "success": True,
                 "data": execution.model_dump(mode="json"),
             }), 202
+        except Exception as e:
+            return _handle_error(e)
+
+    @bp.route("/<run_id>/intervention-metrics", methods=["GET"])
+    def get_intervention_metrics(run_id: str):
+        ms = _get_metrics_service()
+        try:
+            cfg = ms.get_config(run_id)
+            if cfg is None:
+                return jsonify({"success": True, "data": {"status": "not_configured"}}), 200
+            bundle = ms.get(run_id)
+            if bundle is None:
+                return jsonify({"success": True, "data": {"status": "computing"}}), 200
+            return jsonify({"success": True, "data": bundle.model_dump(mode="json")}), 200
+        except Exception as e:
+            return _handle_error(e)
+
+    @bp.route("/<run_id>/intervention-metric-config", methods=["PUT"])
+    def save_intervention_metric_config(run_id: str):
+        ms = _get_metrics_service()
+        data = request.get_json(silent=True) or {}
+        try:
+            cfg = HeatConfig(**data)
+            ms.save_config(run_id, cfg)
+            bundle = ms.compute(run_id, cfg)
+            return jsonify({"success": True, "data": bundle.model_dump(mode="json")}), 200
+        except Exception as e:
+            return _handle_error(e)
+
+    @bp.route("/<run_id>/intervention-labels/correct", methods=["POST"])
+    def correct_intervention_label(run_id: str):
+        ms = _get_metrics_service()
+        data = request.get_json(silent=True) or {}
+        try:
+            platform = data.get("platform")
+            trace_rowid = data.get("trace_rowid")
+            related = data.get("related")
+            reason = data.get("reason", "")
+            if not platform or trace_rowid is None:
+                return jsonify({"success": False, "error": "platform and trace_rowid required"}), 400
+            label = ms.correct(
+                run_id,
+                (run_id, platform, int(trace_rowid)),
+                related=related,
+                reason=reason,
+            )
+            return jsonify({"success": True, "data": label.model_dump(mode="json")}), 200
         except Exception as e:
             return _handle_error(e)
 

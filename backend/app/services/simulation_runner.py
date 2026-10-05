@@ -391,6 +391,12 @@ class SimulationRunner:
             simulation.status = status
             simulation.error = error
             manager._save_simulation_state(simulation)
+            if runner_status in (RunnerStatus.STOPPED, RunnerStatus.FAILED):
+                try:
+                    from app.services.intervention_metrics import get_metrics_service
+                    get_metrics_service().request_refresh(simulation_id, finished=False, force_incomplete=True)
+                except Exception:
+                    pass
         except Exception as sync_error:
             # state.json is a secondary projection. Never let a projection
             # failure skip the authoritative run-state finalization or Zep
@@ -947,6 +953,11 @@ class SimulationRunner:
                                             f"所有平台已结束，等待进程与图谱写入完成: "
                                             f"{state.simulation_id}"
                                         )
+                                        try:
+                                            from app.services.intervention_metrics import get_metrics_service
+                                            get_metrics_service().request_refresh(state.simulation_id, finished=True)
+                                        except Exception:
+                                            pass
                                 
                                 # 更新轮次信息（从 round_end 事件）
                                 elif event_type == "round_end":
@@ -968,6 +979,12 @@ class SimulationRunner:
                                         state.current_round = round_num
                                     # 总体时间取两个平台的最大值
                                     state.simulated_hours = max(state.twitter_simulated_hours, state.reddit_simulated_hours)
+
+                                    try:
+                                        from app.services.intervention_metrics import get_metrics_service
+                                        get_metrics_service().request_refresh(state.simulation_id, finished=False)
+                                    except Exception:
+                                        pass
                                 
                                 continue
                             

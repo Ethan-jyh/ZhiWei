@@ -697,6 +697,39 @@
     "disclaimer": "Statements will disseminate organically through recommendation algorithms; agents will not automatically adopt or agree with the viewpoint.",
     "round": "Round",
     "effectiveRound": "Published Round",
-    "postId": "Platform Post ID"
+    "postId": "Platform Post ID",
+    "metrics": {
+      "title": "Topic Heat & Cooling Analysis",
+      "subtitle": "Objectively measure discussion volume and cooling duration around intervention statements",
+      "configureTitle": "Configure Heat Analysis Parameters",
+      "notConfigured": "Metrics are not yet configured for this simulation",
+      "computing": "Computing discussion metrics, please wait...",
+      "threshold": "Cooling Threshold (θ)",
+      "consecutiveRounds": "Consecutive Rounds (w)",
+      "minutesPerRound": "Minutes Per Round",
+      "saveAndCalculate": "Save & Compute",
+      "reconfigure": "Edit Config",
+      "peakHeat": "Peak Discussion",
+      "peakRound": "Round {round}",
+      "coolingDuration": "Cooling Duration",
+      "durationDetail": "{rounds} rounds ({minutes} min)",
+      "status": {
+        "cooled": "Cooled Down",
+        "provisional": "Provisional (Observing)",
+        "not_cooled": "Not Cooled",
+        "no_discussion": "No Discussion",
+        "below_threshold": "Below Threshold",
+        "incomplete": "Incomplete Data"
+      },
+      "reboundAlert": "Rebound detected at rounds: {rounds}",
+      "disclaimer": "Note: Discussion heat measures total posts, comments, and reposts. It indicates topic scale and cooling duration, not sentiment or satisfaction with the intervention.",
+      "correctTitle": "Manual Label Correction",
+      "correctPlatform": "Platform",
+      "correctRowId": "Trace Row ID",
+      "correctRelated": "Related to Topic",
+      "correctReason": "Correction Reason",
+      "submitCorrection": "Submit Correction",
+      "statementMarker": "Intervention Injected (Round {round})"
+    }
   }
 }

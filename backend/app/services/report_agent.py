@@ -893,7 +893,8 @@ class ReportAgent:
         simulation_id: str,
         simulation_requirement: str,
         llm_client: Optional[LLMClient] = None,
-        zep_tools: Optional[ZepToolsService] = None
+        zep_tools: Optional[ZepToolsService] = None,
+        metrics_service: Optional[Any] = None
     ):
         """
         初始化Report Agent
@@ -904,6 +905,7 @@ class ReportAgent:
             simulation_requirement: 模拟需求描述
             llm_client: LLM客户端（可选）
             zep_tools: Zep工具服务（可选）
+            metrics_service: 干预指标服务（可选）
         """
         self.graph_id = graph_id
         self.simulation_id = simulation_id
@@ -911,6 +913,7 @@ class ReportAgent:
         
         self.llm = llm_client or LLMClient()
         self.zep_tools = zep_tools or ZepToolsService()
+        self.metrics_service = metrics_service
         
         # 工具定义
         self.tools = self._define_tools()
@@ -956,6 +959,11 @@ class ReportAgent:
                     "interview_topic": "采访主题或需求描述（如：'了解学生对宿舍甲醛事件的看法'）",
                     "max_agents": "最多采访的Agent数量（可选，默认5，最大10）"
                 }
+            },
+            "intervention_summary": {
+                "name": "intervention_summary",
+                "description": "获取当前模拟运行的话题干预与舆情热度指标摘要（包含每轮热度、峰值、回落时间等客观证据，仅衡量讨论频次，不代表公众对干预的满意度）",
+                "parameters": {}
             }
         }
     
@@ -1060,15 +1068,53 @@ class ReportAgent:
                 result = [n.to_dict() for n in nodes]
                 return json.dumps(result, ensure_ascii=False, indent=2)
             
+            elif tool_name == "intervention_summary":
+                # 仅接受所属报告 simulation_id 对应运行，不接受模型传入任意 run 覆盖
+                ms = self.metrics_service
+                if ms is None:
+                    try:
+                        from .intervention_metrics import get_metrics_service
+                        ms = get_metrics_service()
+                    except Exception:
+                        pass
+                if ms is None:
+                    return "话题干预指标服务不可用。"
+                
+                bundle = ms.get(self.simulation_id)
+                if bundle is None:
+                    return f"模拟运行 {self.simulation_id} 尚未配置或计算话题干预指标。"
+                
+                cooling = bundle.cooling
+                cfg = bundle.config
+                lines = [
+                    f"### 模拟运行 {self.simulation_id} 话题干预与舆情热度摘要",
+                    f"- 话题标识: {cfg.topic_id}",
+                    f"- 回落阈值 (θ): {cfg.threshold} (连续 {cfg.consecutive_rounds} 轮 ≤ {cfg.threshold} 视为回落)",
+                    f"- 每轮模拟时间: {cfg.minutes_per_round} 分钟",
+                    f"- 峰值讨论热度: {cooling.peak_heat} (发生于第 {cooling.peak_round} 轮)",
+                    f"- 回落状态: {cooling.status}",
+                ]
+                if cooling.duration_rounds is not None:
+                    lines.append(f"- 回落耗时: {cooling.duration_rounds} 轮 ({cooling.duration_minutes} 分钟, 确认于第 {cooling.confirmed_round} 轮)")
+                if cooling.rebound_rounds:
+                    lines.append(f"- 确认后反弹轮次: {cooling.rebound_rounds}")
+                lines.append(f"- 数据修订版本 (证据ID): {bundle.revision}")
+                lines.append("各轮次讨论热度明细:")
+                for r in bundle.rounds:
+                    heat_str = str(r.heat) if r.heat is not None else "缺失/待定"
+                    lines.append(f"  * 第 {r.round_num} 轮: 热度={heat_str}, 发帖={r.posts}, 评论={r.comments}, 转发={r.reposts}, 注入={r.injected_posts_count}, 状态={r.status}")
+                lines.append("【特别说明】讨论热度指标仅衡量围绕该事件的总发帖、转发及评论数量，用于评估话题讨论规模与降温周期，不代表公众对干预声明或处置方案的认同度或满意度。")
+                return "\n".join(lines)
+
             else:
-                return f"未知工具: {tool_name}。请使用以下工具之一: insight_forge, panorama_search, quick_search"
+                return f"未知工具: {tool_name}。请使用以下工具之一: insight_forge, panorama_search, quick_search, intervention_summary"
                 
         except Exception as e:
             logger.error(t('report.toolExecFailed', toolName=tool_name, error=str(e)))
             return f"工具执行失败: {str(e)}"
     
     # 合法的工具名称集合，用于裸 JSON 兜底解析时校验
-    VALID_TOOL_NAMES = {"insight_forge", "panorama_search", "quick_search", "interview_agents"}
+    VALID_TOOL_NAMES = {"insight_forge", "panorama_search", "quick_search", "interview_agents", "intervention_summary"}
 
     def _parse_tool_calls(self, response: str) -> List[Dict[str, Any]]:
         """
