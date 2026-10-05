@@ -241,6 +241,36 @@ class ExperimentStore:
                 for r in rows
             ]
 
+    def get_run(self, run_id: str) -> ExperimentRun | None:
+        """Find an ExperimentRun by run_id."""
+        with self._get_connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT experiment_id, variant_id, replicate_id, idempotency_key,
+                       run_id, simulation_id, seed, compatibility_hash, status,
+                       exploratory, error
+                FROM experiment_runs
+                WHERE run_id = ?
+                """,
+                (run_id,),
+            )
+            row = cur.fetchone()
+            if not row:
+                return None
+            return ExperimentRun(
+                run_id=row["run_id"],
+                simulation_id=row["simulation_id"],
+                experiment_id=row["experiment_id"],
+                variant_id=row["variant_id"],
+                replicate_id=row["replicate_id"],
+                seed=row["seed"],
+                compatibility_hash=row["compatibility_hash"],
+                status=row["status"],
+                exploratory=bool(row["exploratory"]),
+                error=row["error"],
+            )
+
     def reserve_run(
         self,
         experiment_id: str,

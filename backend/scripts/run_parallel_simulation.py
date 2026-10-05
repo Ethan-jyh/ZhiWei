@@ -1042,9 +1042,11 @@ def get_active_agents_for_round(
     env,
     config: Dict[str, Any],
     current_hour: int,
-    round_num: int
+    round_num: int,
+    rng: Optional[Any] = None
 ) -> List:
     """根据时间和配置决定本轮激活哪些Agent"""
+    r = rng or random
     time_config = config.get("time_config", {})
     agent_configs = config.get("agent_configs", [])
     
@@ -1061,7 +1063,7 @@ def get_active_agents_for_round(
     else:
         multiplier = 1.0
     
-    target_count = int(random.uniform(base_min, base_max) * multiplier)
+    target_count = int(r.uniform(base_min, base_max) * multiplier)
     
     candidates = []
     for cfg in agent_configs:
@@ -1072,10 +1074,10 @@ def get_active_agents_for_round(
         if current_hour not in active_hours:
             continue
         
-        if random.random() < activity_level:
+        if r.random() < activity_level:
             candidates.append(agent_id)
     
-    selected_ids = random.sample(
+    selected_ids = r.sample(
         candidates, 
         min(target_count, len(candidates))
     ) if candidates else []
@@ -1226,6 +1228,15 @@ async def run_twitter_simulation(
     
     start_time = datetime.now()
     
+    seed = config.get("seed") or config.get("time_config", {}).get("seed")
+    rng = None
+    if seed is not None:
+        try:
+            from intervention.runtime import make_platform_rng
+            rng = make_platform_rng(seed, "twitter")
+        except Exception:
+            pass
+
     for round_num in range(total_rounds):
         # 检查是否收到退出信号
         if _shutdown_event and _shutdown_event.is_set():
@@ -1238,7 +1249,7 @@ async def run_twitter_simulation(
         simulated_day = simulated_minutes // (60 * 24) + 1
         
         active_agents = get_active_agents_for_round(
-            result.env, config, simulated_hour, round_num
+            result.env, config, simulated_hour, round_num, rng=rng
         )
         
         # 无论是否有活跃agent，都记录round开始
@@ -1424,8 +1435,15 @@ async def run_reddit_simulation(
         if total_rounds < original_rounds:
             log_info(f"轮数已截断: {original_rounds} -> {total_rounds} (max_rounds={max_rounds})")
     
-    start_time = datetime.now()
-    
+    seed = config.get("seed") or config.get("time_config", {}).get("seed")
+    rng = None
+    if seed is not None:
+        try:
+            from intervention.runtime import make_platform_rng
+            rng = make_platform_rng(seed, "reddit")
+        except Exception:
+            pass
+
     for round_num in range(total_rounds):
         # 检查是否收到退出信号
         if _shutdown_event and _shutdown_event.is_set():
@@ -1438,7 +1456,7 @@ async def run_reddit_simulation(
         simulated_day = simulated_minutes // (60 * 24) + 1
         
         active_agents = get_active_agents_for_round(
-            result.env, config, simulated_hour, round_num
+            result.env, config, simulated_hour, round_num, rng=rng
         )
         
         # 无论是否有活跃agent，都记录round开始

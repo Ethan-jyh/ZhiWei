@@ -463,7 +463,8 @@ class TwitterSimulationRunner:
         self, 
         env, 
         current_hour: int,
-        round_num: int
+        round_num: int,
+        rng: Optional[Any] = None
     ) -> List:
         """
         根据时间和配置决定本轮激活哪些Agent
@@ -472,10 +473,12 @@ class TwitterSimulationRunner:
             env: OASIS环境
             current_hour: 当前模拟小时（0-23）
             round_num: 当前轮数
+            rng: 可选隔离随机发生器
             
         Returns:
             激活的Agent列表
         """
+        r = rng or random
         time_config = self.config.get("time_config", {})
         agent_configs = self.config.get("agent_configs", [])
         
@@ -494,7 +497,7 @@ class TwitterSimulationRunner:
         else:
             multiplier = 1.0
         
-        target_count = int(random.uniform(base_min, base_max) * multiplier)
+        target_count = int(r.uniform(base_min, base_max) * multiplier)
         
         # 根据每个Agent的配置计算激活概率
         candidates = []
@@ -508,11 +511,11 @@ class TwitterSimulationRunner:
                 continue
             
             # 根据活跃度计算概率
-            if random.random() < activity_level:
+            if r.random() < activity_level:
                 candidates.append(agent_id)
         
         # 随机选择
-        selected_ids = random.sample(
+        selected_ids = r.sample(
             candidates, 
             min(target_count, len(candidates))
         ) if candidates else []
@@ -630,6 +633,15 @@ class TwitterSimulationRunner:
         print("\n开始模拟循环...")
         start_time = datetime.now()
         
+        seed = self.config.get("seed") or self.config.get("time_config", {}).get("seed")
+        rng = None
+        if seed is not None:
+            try:
+                from intervention.runtime import make_platform_rng
+                rng = make_platform_rng(seed, "twitter")
+            except Exception:
+                pass
+
         for round_num in range(total_rounds):
             # 计算当前模拟时间
             simulated_minutes = round_num * minutes_per_round
@@ -638,7 +650,7 @@ class TwitterSimulationRunner:
             
             # 获取本轮激活的Agent
             active_agents = self._get_active_agents_for_round(
-                self.env, simulated_hour, round_num
+                self.env, simulated_hour, round_num, rng=rng
             )
             
             if not active_agents:

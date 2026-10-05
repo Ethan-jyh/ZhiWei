@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
+import random
 from collections.abc import Awaitable, Callable
 from typing import Any, Literal
 
@@ -17,6 +19,15 @@ from intervention.oasis_adapter import PlatformPublisher
 from intervention.storage import StatementStore
 
 logger = logging.getLogger("mirofish.intervention.runtime")
+
+
+def make_platform_rng(seed: int | None, platform: Platform) -> random.Random:
+    """Derive an isolated deterministic pseudo-random generator per platform stream."""
+    if seed is None:
+        return random.Random()
+    h = hashlib.sha256(f"{seed}:{platform}".encode("utf-8")).digest()
+    derived = int.from_bytes(h[:8], byteorder="big")
+    return random.Random(derived)
 
 
 async def run_round_cycle(

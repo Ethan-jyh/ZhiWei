@@ -470,11 +470,13 @@ class RedditSimulationRunner:
         self, 
         env, 
         current_hour: int,
-        round_num: int
+        round_num: int,
+        rng: Optional[Any] = None
     ) -> List:
         """
         根据时间和配置决定本轮激活哪些Agent
         """
+        r = rng or random
         time_config = self.config.get("time_config", {})
         agent_configs = self.config.get("agent_configs", [])
         
@@ -491,7 +493,7 @@ class RedditSimulationRunner:
         else:
             multiplier = 1.0
         
-        target_count = int(random.uniform(base_min, base_max) * multiplier)
+        target_count = int(r.uniform(base_min, base_max) * multiplier)
         
         candidates = []
         for cfg in agent_configs:
@@ -502,10 +504,10 @@ class RedditSimulationRunner:
             if current_hour not in active_hours:
                 continue
             
-            if random.random() < activity_level:
+            if r.random() < activity_level:
                 candidates.append(agent_id)
         
-        selected_ids = random.sample(
+        selected_ids = r.sample(
             candidates, 
             min(target_count, len(candidates))
         ) if candidates else []
@@ -623,13 +625,22 @@ class RedditSimulationRunner:
         print("\n开始模拟循环...")
         start_time = datetime.now()
         
+        seed = self.config.get("seed") or self.config.get("time_config", {}).get("seed")
+        rng = None
+        if seed is not None:
+            try:
+                from intervention.runtime import make_platform_rng
+                rng = make_platform_rng(seed, "reddit")
+            except Exception:
+                pass
+
         for round_num in range(total_rounds):
             simulated_minutes = round_num * minutes_per_round
             simulated_hour = (simulated_minutes // 60) % 24
             simulated_day = simulated_minutes // (60 * 24) + 1
             
             active_agents = self._get_active_agents_for_round(
-                self.env, simulated_hour, round_num
+                self.env, simulated_hour, round_num, rng=rng
             )
             
             if not active_agents:
