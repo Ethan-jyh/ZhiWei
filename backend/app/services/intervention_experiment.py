@@ -207,3 +207,103 @@ class InterventionExperimentService:
         run.status = "running"
         self.store.put_run(run)
         return run
+
+    def mark_exploratory(self, run_id: str, *, reason: str = "") -> None:
+        """Mark a run as exploratory due to manual intervention adjustments."""
+        run = self.store.get_run(run_id)
+        if run:
+            run.exploratory = True
+            self.store.put_run(run)
+
+    def compare(
+        self,
+        experiment_id: str,
+        *,
+        metrics_provider: Callable[[str], MetricBundle | None],
+        statements_provider: Callable[[str], list[dict[str, Any]]],
+    ) -> ComparisonResult:
+        """Transparently compare compatible runs against baseline without obscuring anomalies."""
+        experiment = self.store.get(experiment_id)
+        runs = self.store.list_runs(experiment_id)
+        variant_map = {v.variant_id: v for v in experiment.variants}
+
+        included_runs: list[dict[str, Any]] = []
+        incompatible_runs: list[dict[str, Any]] = []
+
+        standard_limitations = [
+            "不同随机种子或LLM随机采样存在固有方差，单次实验结果不代表因果预测准确率",
+            "各运行间环境状态、平台数据库与讨论历史相互严格隔离，无继承关系",
+            "热度指标仅衡量围绕特定话题的发帖与互动频次规模及回落时间，不代表公众对方案认同度或满意度",
+        ]
+
+        for run in runs:
+            variant = variant_map.get(run.variant_id)
+            bundle = metrics_provider(run.simulation_id)
+            actual_stmts = statements_provider(run.simulation_id)
+
+            # 1. Metric configuration check
+            if bundle is not None:
+                b_cfg = bundle.config
+                s_cfg = experiment.scene.metric_config
+                if (
+                    b_cfg.threshold != s_cfg.threshold
+                    or b_cfg.consecutive_rounds != s_cfg.consecutive_rounds
+                    or b_cfg.minutes_per_round != s_cfg.minutes_per_round
+                ):
+                    incompatible_runs.append({
+                        "run_id": run.run_id,
+                        "variant_id": run.variant_id,
+                        "reason": "metric_config_mismatch",
+                        "detail": f"Threshold {b_cfg.threshold} != baseline {s_cfg.threshold}",
+                    })
+                    continue
+
+            # 2. Check compatibility hash
+            total_rounds = experiment.scene.config.get("max_rounds", 20)
+            enabled_platforms = set(experiment.scene.profile_files.keys())
+            expected_hash = compatibility_hash(
+                experiment.scene,
+                runtime_model_config=experiment.scene.model_settings,
+                metric_config=experiment.scene.metric_config,
+                enabled_platforms=enabled_platforms,  # type: ignore[arg-type]
+                total_rounds=total_rounds,
+            )
+            if run.compatibility_hash and run.compatibility_hash != expected_hash:
+                incompatible_runs.append({
+                    "run_id": run.run_id,
+                    "variant_id": run.variant_id,
+                    "reason": "compatibility_hash_mismatch",
+                    "detail": "Baseline scene or model settings diverged",
+                })
+                continue
+
+            # 3. Check for exploratory: extra manual statements
+            is_exploratory = run.exploratory
+            if variant is not None:
+                expected_count = len(variant.statements)
+                if len(actual_stmts) > expected_count:
+                    is_exploratory = True
+                else:
+                    for s in actual_stmts:
+                        if s.get("origin") == "manual" or s.get("source") == "manual":
+                            is_exploratory = True
+                            break
+
+            included_runs.append({
+                "run": run.model_dump(),
+                "variant_id": run.variant_id,
+                "replicate_id": run.replicate_id,
+                "seed": run.seed,
+                "status": run.status,
+                "exploratory": is_exploratory,
+                "bundle": bundle.model_dump() if bundle else None,
+                "statements": actual_stmts,
+                "error": run.error,
+            })
+
+        return ComparisonResult(
+            experiment_id=experiment_id,
+            runs=included_runs,
+            incompatible_runs=incompatible_runs,
+            limitations=standard_limitations,
+        )
