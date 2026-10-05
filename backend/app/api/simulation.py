@@ -1422,6 +1422,78 @@ def download_simulation_script(script_name: str):
         }), 500
 
 
+@simulation_bp.route('/script/bundle/download', methods=['GET'])
+def download_simulation_script_bundle():
+    """下载包含所有模拟运行脚本及干预依赖包的完整压缩包"""
+    import io
+    import zipfile
+
+    try:
+        scripts_dir = os.path.join(
+            os.path.dirname(__file__),
+            '../../scripts'
+        )
+        backend_dir = os.path.join(
+            os.path.dirname(__file__),
+            '../..'
+        )
+        intervention_dir = os.path.join(backend_dir, 'intervention')
+
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+            # 核心运行脚本
+            for script_name in [
+                'run_parallel_simulation.py',
+                'run_twitter_simulation.py',
+                'run_reddit_simulation.py',
+                'action_logger.py',
+            ]:
+                script_path = os.path.join(scripts_dir, script_name)
+                if os.path.exists(script_path):
+                    zf.write(script_path, arcname=script_name)
+
+            # intervention 模块
+            if os.path.exists(intervention_dir):
+                for root, _, files in os.walk(intervention_dir):
+                    for file in files:
+                        if not file.endswith('.pyc') and not file.startswith('.'):
+                            full_path = os.path.join(root, file)
+                            rel_path = os.path.relpath(full_path, backend_dir)
+                            zf.write(full_path, arcname=rel_path)
+
+            # README 指南
+            readme_content = (
+                "MiroFish Simulation Scripts Bundle\n"
+                "==================================\n"
+                "解压后请保持目录结构：\n"
+                "├── run_parallel_simulation.py\n"
+                "├── run_twitter_simulation.py\n"
+                "├── run_reddit_simulation.py\n"
+                "├── action_logger.py\n"
+                "└── intervention/\n"
+                "    ├── models.py\n"
+                "    ├── storage.py\n"
+                "    ├── runtime.py\n"
+                "    └── ...\n"
+            )
+            zf.writestr("README.txt", readme_content)
+
+        memory_file.seek(0)
+        return send_file(
+            memory_file,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name='simulation_scripts_bundle.zip'
+        )
+    except Exception as e:
+        logger.error(f"打包下载脚本失败: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
 # ============== Profile生成接口（独立使用） ==============
 
 @simulation_bp.route('/generate-profiles', methods=['POST'])

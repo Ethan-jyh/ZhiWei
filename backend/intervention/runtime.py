@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Literal
+from collections.abc import Awaitable, Callable
+from typing import Any, Literal
 
 from intervention.models import (
     Execution,
@@ -16,6 +17,23 @@ from intervention.oasis_adapter import PlatformPublisher
 from intervention.storage import StatementStore
 
 logger = logging.getLogger("mirofish.intervention.runtime")
+
+
+async def run_round_cycle(
+    *,
+    platform: Platform,
+    round_num: int,
+    coordinator: Any,
+    act: Callable[[], Awaitable[None]],
+    record: Callable[[], Awaitable[None]],
+) -> None:
+    """Execute standard simulation round lifecycle ensuring shared intervention boundaries."""
+    await coordinator.before_round(platform, round_num)
+    try:
+        await act()
+        await record()
+    finally:
+        await coordinator.after_round(platform, round_num)
 
 
 class InterventionRuntime:

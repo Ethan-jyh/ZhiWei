@@ -254,6 +254,115 @@ class SimulationRunner:
             )
 
     @classmethod
+    def get_intervention_context(cls, simulation_id: str):
+        """Resolve RunContext from simulation state, config, and profile files."""
+        import csv
+        from intervention.models import RunContext
+
+        sim_dir = os.path.join(cls.RUN_STATE_DIR, simulation_id)
+        if not os.path.exists(sim_dir):
+            raise FileNotFoundError(f"Simulation directory not found: {sim_dir}")
+
+        run_state = cls.get_run_state(simulation_id)
+        phase = "prepared"
+        if run_state:
+            status_val = run_state.status.value if hasattr(run_state.status, "value") else str(run_state.status)
+            if status_val in ("running", "paused"):
+                phase = "running"
+            elif status_val == "completed":
+                phase = "completed"
+            elif status_val == "stopped":
+                phase = "stopped"
+            elif status_val == "failed":
+                phase = "failed"
+            elif status_val == "interview":
+                phase = "interview"
+            else:
+                phase = "prepared"
+
+        config_path = os.path.join(sim_dir, "simulation_config.json")
+        config = {}
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, "r", encoding="utf-8") as f:
+                    config = json.load(f)
+            except Exception:
+                pass
+
+        time_config = config.get("time_config", {})
+        total_hours = time_config.get("total_simulation_hours", 72)
+        total_rounds = total_hours * 2
+        max_rounds = config.get("max_rounds")
+        if max_rounds and isinstance(max_rounds, int) and max_rounds < total_rounds:
+            total_rounds = max_rounds
+
+        topic_id = config.get("topic_id") or config.get("topic") or simulation_id
+
+        platforms = set()
+        agent_ids = {}
+
+        twitter_csv = os.path.join(sim_dir, "twitter_profiles.csv")
+        if os.path.exists(twitter_csv):
+            platforms.add("twitter")
+            twitter_ids = set()
+            try:
+                with open(twitter_csv, "r", encoding="utf-8") as f:
+                    reader = csv.DictReader(f)
+                    for idx, row in enumerate(reader):
+                        aid = row.get("agent_id") or row.get("id") or row.get("user_id")
+                        if aid is not None:
+                            try:
+                                twitter_ids.add(int(aid))
+                            except ValueError:
+                                pass
+                        else:
+                            twitter_ids.add(idx)
+            except Exception:
+                pass
+            agent_ids["twitter"] = twitter_ids
+
+        reddit_json = os.path.join(sim_dir, "reddit_profiles.json")
+        if os.path.exists(reddit_json):
+            platforms.add("reddit")
+            reddit_ids = set()
+            try:
+                with open(reddit_json, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        for idx, item in enumerate(data):
+                            aid = item.get("agent_id") or item.get("user_id") or item.get("id")
+                            if aid is not None:
+                                try:
+                                    reddit_ids.add(int(aid))
+                                except ValueError:
+                                    pass
+                            else:
+                                reddit_ids.add(idx)
+            except Exception:
+                pass
+            agent_ids["reddit"] = reddit_ids
+
+        if not platforms:
+            agent_configs = config.get("agent_configs", [])
+            if agent_configs:
+                platforms.add("twitter")
+                agent_ids["twitter"] = {
+                    int(ac.get("agent_id"))
+                    for ac in agent_configs
+                    if ac.get("agent_id") is not None
+                }
+
+        return RunContext(
+            run_id=simulation_id,
+            phase=phase,
+            total_rounds=total_rounds,
+            platforms=platforms or {"twitter"},
+            agent_ids=agent_ids or {"twitter": set()},
+            topic_id=topic_id,
+        )
+
+
+    @classmethod
     def _sync_simulation_status(
         cls,
         simulation_id: str,
