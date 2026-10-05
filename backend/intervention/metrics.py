@@ -7,6 +7,7 @@ from pathlib import Path
 
 from intervention.metric_models import (
     ActionRecord,
+    CoolingSummary,
     HeatConfig,
     RoundHeat,
     TopicLabel,
@@ -139,3 +140,75 @@ def aggregate_heat(
         )
 
     return results
+
+
+def calculate_cooling(
+    rounds: list[RoundHeat],
+    config: HeatConfig,
+    *,
+    finished: bool,
+) -> CoolingSummary:
+    """Calculate heat cooling window, duration, and post-confirmation rebounds."""
+    if not rounds or any(r.status != "complete" or r.heat is None for r in rounds):
+        return CoolingSummary(status="incomplete")
+
+    heats = [r.heat for r in rounds]
+    if all(h == 0 for h in heats):
+        return CoolingSummary(status="no_discussion")
+
+    max_heat = max(heats)
+    peak_idx = heats.index(max_heat)
+    peak_round = rounds[peak_idx].round_num
+
+    if max_heat <= config.threshold:
+        return CoolingSummary(
+            status="below_threshold",
+            peak_round=peak_round,
+            peak_heat=max_heat,
+        )
+
+    w = config.consecutive_rounds
+    n = len(rounds)
+    start_round = None
+    confirmed_round = None
+    cooling_window_idx = None
+
+    for i in range(peak_idx + 1, n - w + 1):
+        if all(rounds[i + k].heat <= config.threshold for k in range(w)):
+            cooling_window_idx = i
+            start_round = rounds[i].round_num
+            confirmed_round = rounds[i + w - 1].round_num
+            break
+
+    if cooling_window_idx is not None:
+        duration_rounds = start_round - peak_round
+        duration_minutes = duration_rounds * config.minutes_per_round
+
+        rebound_rounds = [
+            r.round_num
+            for r in rounds[cooling_window_idx + w :]
+            if r.heat is not None and r.heat > config.threshold
+        ]
+
+        status = "cooled" if finished else "provisional"
+        return CoolingSummary(
+            status=status,
+            peak_round=peak_round,
+            peak_heat=max_heat,
+            start_round=start_round,
+            confirmed_round=confirmed_round,
+            duration_rounds=duration_rounds,
+            duration_minutes=duration_minutes,
+            rebound_rounds=rebound_rounds,
+        )
+
+    status = "not_cooled" if finished else "provisional"
+    return CoolingSummary(
+        status=status,
+        peak_round=peak_round,
+        peak_heat=max_heat,
+        duration_rounds=None,
+        duration_minutes=None,
+        rebound_rounds=[],
+    )
+
