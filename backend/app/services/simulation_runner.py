@@ -65,6 +65,10 @@ class AgentAction:
     action_args: Dict[str, Any] = field(default_factory=dict)
     result: Optional[str] = None
     success: bool = True
+    trace_rowid: Optional[int] = None
+    origin: str = "agent"
+    intervention_id: Optional[str] = None
+    topic_id: Optional[str] = None
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -77,6 +81,10 @@ class AgentAction:
             "action_args": self.action_args,
             "result": self.result,
             "success": self.success,
+            "trace_rowid": self.trace_rowid,
+            "origin": self.origin,
+            "intervention_id": self.intervention_id,
+            "topic_id": self.topic_id,
         }
 
 
@@ -346,6 +354,10 @@ class SimulationRunner:
                     action_args=a.get("action_args", {}),
                     result=a.get("result"),
                     success=a.get("success", True),
+                    trace_rowid=a.get("trace_rowid"),
+                    origin=a.get("origin", "agent"),
+                    intervention_id=a.get("intervention_id"),
+                    topic_id=a.get("topic_id"),
                 ))
             
             return state
@@ -860,6 +872,10 @@ class SimulationRunner:
                                 action_args=action_data.get("action_args", {}),
                                 result=action_data.get("result"),
                                 success=action_data.get("success", True),
+                                trace_rowid=action_data.get("trace_rowid"),
+                                origin=action_data.get("origin", "agent"),
+                                intervention_id=action_data.get("intervention_id"),
+                                topic_id=action_data.get("topic_id"),
                             )
                             state.add_action(action)
                             
@@ -1145,6 +1161,10 @@ class SimulationRunner:
                         action_args=data.get("action_args", {}),
                         result=data.get("result"),
                         success=data.get("success", True),
+                        trace_rowid=data.get("trace_rowid"),
+                        origin=data.get("origin", "agent"),
+                        intervention_id=data.get("intervention_id"),
+                        topic_id=data.get("topic_id"),
                     ))
                     
                 except json.JSONDecodeError:

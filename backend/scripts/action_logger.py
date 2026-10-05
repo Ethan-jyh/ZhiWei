@@ -48,7 +48,12 @@ class PlatformActionLogger:
         action_type: str,
         action_args: Optional[Dict[str, Any]] = None,
         result: Optional[str] = None,
-        success: bool = True
+        success: bool = True,
+        *,
+        trace_rowid: Optional[int] = None,
+        origin: str = 'agent',
+        intervention_id: Optional[str] = None,
+        topic_id: Optional[str] = None
     ):
         """记录一个动作"""
         entry = {
@@ -60,6 +65,10 @@ class PlatformActionLogger:
             "action_args": action_args or {},
             "result": result,
             "success": success,
+            "trace_rowid": trace_rowid,
+            "origin": origin,
+            "intervention_id": intervention_id,
+            "topic_id": topic_id,
         }
         
         with open(self.log_path, 'a', encoding='utf-8') as f:

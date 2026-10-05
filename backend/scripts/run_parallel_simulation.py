@@ -737,6 +737,7 @@ def fetch_new_actions_from_db(
                 'agent_name': agent_names.get(user_id, f'Agent_{user_id}'),
                 'action_type': action_type,
                 'action_args': simplified_args,
+                'trace_rowid': rowid,
             })
         
         conn.close()
@@ -1266,7 +1267,8 @@ async def run_twitter_simulation(
                     agent_id=action_data['agent_id'],
                     agent_name=action_data['agent_name'],
                     action_type=action_data['action_type'],
-                    action_args=action_data['action_args']
+                    action_args=action_data['action_args'],
+                    trace_rowid=action_data.get('trace_rowid'),
                 )
                 total_actions += 1
                 round_action_count += 1
@@ -1465,7 +1467,8 @@ async def run_reddit_simulation(
                     agent_id=action_data['agent_id'],
                     agent_name=action_data['agent_name'],
                     action_type=action_data['action_type'],
-                    action_args=action_data['action_args']
+                    action_args=action_data['action_args'],
+                    trace_rowid=action_data.get('trace_rowid'),
                 )
                 total_actions += 1
                 round_action_count += 1
