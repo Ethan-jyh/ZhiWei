@@ -27,6 +27,8 @@ class CommandType(str, Enum):
     INTERVIEW = "interview"           # 单个Agent采访
     BATCH_INTERVIEW = "batch_interview"  # 批量采访
     CLOSE_ENV = "close_env"           # 关闭环境
+    INJECT_STATEMENT = "inject_statement"  # 运行中注入声明
+    CANCEL_STATEMENT = "cancel_statement"  # 取消声明
 
 
 class CommandStatus(str, Enum):
@@ -185,6 +187,29 @@ class SimulationIPCClient:
             pass
         
         raise TimeoutError(f"等待命令响应超时 ({timeout}秒)")
+
+    def enqueue_command(
+        self,
+        command_type: CommandType,
+        args: Dict[str, Any],
+        *,
+        command_id: str,
+    ) -> str:
+        """
+        异步写入IPC命令，不等待响应。原子写入。
+        """
+        command = IPCCommand(
+            command_id=command_id,
+            command_type=command_type,
+            args=args,
+        )
+        command_file = os.path.join(self.commands_dir, f"{command_id}.json")
+        tmp_file = os.path.join(self.commands_dir, f"{command_id}.tmp")
+        with open(tmp_file, "w", encoding="utf-8") as f:
+            json.dump(command.to_dict(), f, ensure_ascii=False, indent=2)
+        os.replace(tmp_file, command_file)
+        logger.info(f"异步排队IPC命令: {command_type.value}, command_id={command_id}")
+        return command_id
     
     def send_interview(
         self,
