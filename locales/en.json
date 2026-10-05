@@ -663,5 +663,40 @@
     "llmSelectAgentFailed": "LLM agent selection failed, using default selection: {error}",
     "generateInterviewQuestionsFailed": "Failed to generate interview questions: {error}",
     "generateInterviewSummaryFailed": "Failed to generate interview summary: {error}"
+  },
+  "intervention": {
+    "title": "Runtime Statement Injection",
+    "subtitle": "Inject official responses, fact checks or announcements via designated agents",
+    "submit": "Submit Statement",
+    "submitting": "Submitting...",
+    "cancel": "Cancel Statement",
+    "canceling": "Canceling...",
+    "role": "Publisher Role",
+    "platform": "Platform",
+    "kind": "Statement Type",
+    "content": "Statement Content",
+    "placeholderContent": "Enter statement content to publish...",
+    "status": {
+      "queued": "Queued",
+      "accepted": "Accepted",
+      "executing": "Executing",
+      "published": "Published",
+      "failed": "Failed",
+      "canceled": "Canceled",
+      "expired": "Expired",
+      "unknown": "Awaiting Verification"
+    },
+    "kinds": {
+      "official_response": "Official Response",
+      "fact_check": "Fact Check",
+      "rumor_rebuttal": "Rumor Rebuttal",
+      "custom": "Custom Statement"
+    },
+    "triggerNextRound": "Before Next Round (Immediate)",
+    "noInterventions": "No interventions submitted yet",
+    "disclaimer": "Statements will disseminate organically through recommendation algorithms; agents will not automatically adopt or agree with the viewpoint.",
+    "round": "Round",
+    "effectiveRound": "Published Round",
+    "postId": "Platform Post ID"
   }
 }

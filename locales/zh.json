@@ -663,5 +663,40 @@
     "llmSelectAgentFailed": "LLM选择Agent失败，使用默认选择: {error}",
     "generateInterviewQuestionsFailed": "生成采访问题失败: {error}",
     "generateInterviewSummaryFailed": "生成采访摘要失败: {error}"
+  },
+  "intervention": {
+    "title": "运行中声明注入",
+    "subtitle": "通过指定角色发布官方回应、事实核查或声明",
+    "submit": "提交声明",
+    "submitting": "提交中...",
+    "cancel": "取消声明",
+    "canceling": "取消中...",
+    "role": "发布角色",
+    "platform": "目标平台",
+    "kind": "声明类型",
+    "content": "声明正文",
+    "placeholderContent": "请输入要发布的声明内容...",
+    "status": {
+      "queued": "待交付",
+      "accepted": "待执行",
+      "executing": "执行中",
+      "published": "已发布",
+      "failed": "失败",
+      "canceled": "已取消",
+      "expired": "已过期",
+      "unknown": "结果待核对"
+    },
+    "kinds": {
+      "official_response": "官方回应",
+      "fact_check": "事实核查",
+      "rumor_rebuttal": "辟谣澄清",
+      "custom": "自定义声明"
+    },
+    "triggerNextRound": "下一轮开始前 (即刻排入)",
+    "noInterventions": "暂无干预记录",
+    "disclaimer": "声明进入平台后将按照真实算法推荐与传播，不代表所有 Agent 均已接受观点",
+    "round": "轮次",
+    "effectiveRound": "实际发布轮次",
+    "postId": "平台帖子 ID"
   }
 }

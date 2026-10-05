@@ -269,6 +269,16 @@
       </div>
     </div>
 
+    <!-- Runtime Statement Intervention Panel -->
+    <div v-if="simulationId" class="intervention-container" style="margin: 12px 16px;">
+      <InterventionPanel
+        :simulation-id="simulationId"
+        :phase="runStatus.status || (phase === 1 ? 'running' : 'prepared')"
+        :topic-id="projectData?.topic || 'default'"
+        :profiles="derivedProfiles"
+      />
+    </div>
+
     <!-- Bottom Info / Logs -->
     <div class="system-logs">
       <div class="log-header">
@@ -296,6 +306,7 @@ import {
   getRunStatusDetail
 } from '../api/simulation'
 import { generateReport } from '../api/report'
+import InterventionPanel from './InterventionPanel.vue'
 
 const { t } = useI18n()
 
@@ -339,6 +350,19 @@ const twitterActionsCount = computed(() => {
 
 const redditActionsCount = computed(() => {
   return allActions.value.filter(a => a.platform === 'reddit').length
+})
+
+const derivedProfiles = computed(() => {
+  const map = new Map()
+  for (const a of allActions.value) {
+    if (a.agent_id !== undefined && !map.has(a.agent_id)) {
+      map.set(a.agent_id, {
+        agent_id: a.agent_id,
+        name: a.agent_name || `Agent ${a.agent_id}`
+      })
+    }
+  }
+  return Array.from(map.values())
 })
 
 // 格式化模拟流逝时间（根据轮次和每轮分钟数计算）

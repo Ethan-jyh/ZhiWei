@@ -186,3 +186,39 @@ export const interviewAgents = (data) => {
 export const getSimulationHistory = (limit = 20) => {
   return service.get('/api/simulation/history', { params: { limit } })
 }
+
+/**
+ * 保存模拟预设干预计划
+ * @param {string} runId
+ * @param {Array} statements
+ */
+export const saveInterventionPlan = (runId, statements) => {
+  return service.put(`/api/simulation/${runId}/intervention-plan`, { statements })
+}
+
+/**
+ * 提交运行中干预声明
+ * @param {string} runId
+ * @param {Object} payload
+ */
+export const submitIntervention = (runId, payload) => {
+  return service.post(`/api/simulation/${runId}/interventions`, payload)
+}
+
+/**
+ * 获取模拟的所有干预声明与执行状态
+ * @param {string} runId
+ */
+export const listInterventions = (runId) => {
+  return service.get(`/api/simulation/${runId}/interventions`)
+}
+
+/**
+ * 取消待执行的干预声明
+ * @param {string} runId
+ * @param {string} eventId
+ */
+export const cancelIntervention = (runId, eventId) => {
+  return service.post(`/api/simulation/${runId}/interventions/${eventId}/cancel`)
+}
+
